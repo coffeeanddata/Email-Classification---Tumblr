@@ -1,7 +1,6 @@
 # Email Classification in R
 Repository containing code used for Tumblr Email Classification in R
 Files: 
-* SpamAssassinTraining
 * part1.R
   * This scripts gets the email locations, reads the email text and stores each email into a list.
 * part2.R
