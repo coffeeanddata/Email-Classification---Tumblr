@@ -4,7 +4,6 @@ library(ggplot2)
 load('TrainingMessages.rda')
 
 
-####################################################
 #List of functions
 normalization = function(dat, paraData = dat) {
   paraData = paraData[!is.na(paraData)]
@@ -14,20 +13,16 @@ normalization = function(dat, paraData = dat) {
 }
 
 
-##################################################################################
 #Spam or Ham
 SpamTrue = grepl('SpamAssassinTraining/spam',names(emailData))
 
-################################################################################
 #easy vs hard
 easy_hard = gsub('.*SpamAssassinTraining/',"", names(emailData))
 easy_hard = gsub("/.*", "", easy_hard)
 
-################################################################################
 numRecipients = sapply(emailData,function(x) str_count(x$header$To, '@') )
 numRecipients = unlist(ifelse(numRecipients == 0, 1, numRecipients) )
 
-#############################################################################
 #html files
 htmlFiles = sapply(emailData, function(x) 
   sum(grepl("</html>", c(x$body, x$attachments), ignore.case = TRUE)) )
@@ -35,13 +30,11 @@ htmlFiles = sapply(emailData, function(x)
 htmlFiles = ifelse(htmlFiles >0, TRUE, FALSE)
 
 
-######################################################
 getNull = sapply(emailData, function(x) is.null(x$header$Subject) )
 ReSubject = sapply(emailData, function(x)  grepl("Re:", x$header$Subject))
 ReSubject[getNull] = F
 ReSubject = unlist(ReSubject)
 
-###########################################################
 first_str =
   "viagra|pounds|free|guarantee|million|dollar|credit|risk|FINANCIAL|Proposal|debt|"
 second_str = 
@@ -56,7 +49,6 @@ findSpamWords[getNull] = NA
 findSpamWords = unlist(findSpamWords)
 
 
-################################################################
 #Percentage of words captialized
 perCap = function(rawemail){
   rawbody = rawemail$body #finds body
@@ -71,7 +63,6 @@ perCap = function(rawemail){
 
 percentageCap = sapply(emailData, function(x) mean(perCap(x)))
 #percentageCap = normalization(percentageCap)
-########################################################
 emailFrame = data.frame(isSpam = SpamTrue, 
                         NR = numRecipients, 
                         isRe = ReSubject,
@@ -84,13 +75,11 @@ rownames(emailFrame) = 1:nrow(emailFrame)
 head(emailFrame,10)
 save(emailFrame, file = "emailFrame.rda")
 
-#####################################################################
 permuateData = sample(1:nrow(emailFrame))
 emailFrame = emailFrame[permuateData,]
 
 head(emailFrame)
 
-##########
 ggplotTheme = theme(axis.text = element_text(colour = 'black',face = c('bold'),size = 9),
                     title = element_text(face = 'bold',family = 'Helvetica'))
 m = ggplot(emailFrame)+ ggplotTheme+
@@ -137,4 +126,3 @@ m+geom_bar(aes(findHTML, fill = factor(isSpam)))+scale_fill_brewer(palette = 18)
 
 
 
-#######################################################################
